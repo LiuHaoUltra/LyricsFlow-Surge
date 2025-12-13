@@ -119,7 +119,7 @@ declare const $httpClient: any;
 declare const $persistentStore: any;
 declare const $notification: any;
 declare const $done: any;
-declare const $argument: string;
+declare const $argument: string | undefined;
 declare const $request: any;
 
 export const env = new Env('LyricsFlow');
