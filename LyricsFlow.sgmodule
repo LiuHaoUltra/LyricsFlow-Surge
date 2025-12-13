@@ -3,7 +3,6 @@
 #!category=Music
 #!system=ios
 #!arguments=TYPEF_URL:http://127.0.0.1:8000,ENABLE_ENRICH:false,ENRICH_URL:,ENRICH_KEY:,LogLevel:INFO
-#!arguments-desc=TYPEF_URL: TypeF 后端地址\nENABLE_ENRICH: AI 翻译增强\nENRICH_URL: AI API 地址\nENRICH_KEY: AI API Key\nLogLevel: 日志等级
 
 [Script]
 # Request Script - 拦截歌词请求并缓存元数据
