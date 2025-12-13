@@ -1,0 +1,53 @@
+{
+    "id": "LyricsFlow",
+    "name": "LyricsFlow",
+    "icon": "https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/assets/icon.png",
+    "settings": [
+        {
+            "id": "@LyricsFlow.Settings.TYPEF_URL",
+            "key": "@LyricsFlow.Settings",
+            "type": "text",
+            "title": "TypeF URL",
+            "desc": "LyricsFlow TypeF 后端服务器地址",
+            "val": "http://127.0.0.1:8000"
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENABLE_ENRICH",
+            "key": "@LyricsFlow.Settings",
+            "type": "boolean",
+            "title": "Enable AI Enrichment",
+            "desc": "开启 AI 增强功能（透传 API Key）",
+            "val": false
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENRICH_URL",
+            "key": "@LyricsFlow.Settings",
+            "type": "text",
+            "title": "Enrich AI Base URL",
+            "desc": "AI 服务 Base URL (e.g. https://api.openai.com/v1)",
+            "val": ""
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENRICH_KEY",
+            "key": "@LyricsFlow.Settings",
+            "type": "text",
+            "title": "Enrich AI API Key",
+            "desc": "AI 服务 API Key",
+            "val": ""
+        },
+        {
+            "id": "@LyricsFlow.Settings.LogLevel",
+            "key": "@LyricsFlow.Settings",
+            "type": "radios",
+            "title": "Log Level",
+            "desc": "脚本日志等级",
+            "items": [
+                { "key": "DEBUG", "label": "DEBUG" },
+                { "key": "INFO", "label": "INFO" },
+                { "key": "WARN", "label": "WARN" },
+                { "key": "ERROR", "label": "ERROR" }
+            ],
+            "val": "WARN"
+        }
+    ]
+}
