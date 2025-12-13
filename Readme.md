@@ -29,14 +29,20 @@ https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/LyricsFlow.s
 ```
 
 ### 3. 配置参数
-在 Surge 或 BoxJS 中搜索 `LyricsFlow` 进行配置：
+
+#### 方式一：Surge 模块参数（推荐）
+安装模块后，在 Surge 中点击该模块，即可看到可配置的参数。
+
+#### 方式二：BoxJS
+如已安装 BoxJS，可在 BoxJS 应用列表中搜索 `LyricsFlow` 进行配置。
 
 | 参数 | 描述 | 默认值 |
 | :--- | :--- | :--- |
 | `TYPEF_URL` | TypeF 服务器地址 | `http://127.0.0.1:8000` |
-| `ENABLE_ENRICH` | 启用 AI 增强服务（Client） | `False` |
-| `ENRICH_URL` | AI 增强服务 URL (OpenAI 格式) | `None` |
-| `ENRICH_KEY` | AI 增强服务 API Key | `None` |
+| `ENABLE_ENRICH` | 启用 AI 增强服务（Client） | `false` |
+| `ENRICH_URL` | AI 增强服务 URL (OpenAI 格式) | 空 |
+| `ENRICH_KEY` | AI 增强服务 API Key | 空 |
+| `LogLevel` | 日志等级 (WARN/INFO/DEBUG) | `WARN` |
 
 ## 工作原理
 
