@@ -2,6 +2,7 @@
  * LyricsFlow - Spotify Lyrics Enhancer
  * Surge Script - Self-contained (no require)
  */
+console.log("[LyricsFlow] [INIT] Script Loaded"); // Immediate execution check
 
 // ============== Config ==============
 const DEFAULT_CONFIG = {
@@ -162,7 +163,7 @@ function convertToSpotifyFormat(typeFData) {
 (async () => {
     try {
         const url = $request.url;
-        const trackIdMatch = url.match(/track\/([a-zA-Z0-9]+)/);
+        const trackIdMatch = url.match(/track\/([^\/?]+)/); // Match anything not / or ?
         const trackId = trackIdMatch ? trackIdMatch[1] : null;
 
         if (!trackId) {
