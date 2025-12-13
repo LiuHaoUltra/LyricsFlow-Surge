@@ -25,7 +25,7 @@
 将以下链接添加到 Surge 模块列表：
 
 ```text
-https://raw.githubusercontent.com/liuhaoultra/lyricsflow-typel/main/Surge/LyricsFlow.sgmodule
+https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/LyricsFlow.sgmodule
 ```
 
 ### 3. 配置参数
@@ -55,4 +55,4 @@ A: 请检查 TypeF 服务器是否启用了翻译源，或者手动点击 Spotif
 A: 在 BoxJS 设置中开启 `Enable AI Translation`。开启后，点击翻译按钮将优先请求 TypeF 的 AI 缓存结果。
 
 ## 许可证
-本项目基于 MIT 许可证开源。
+本项目基于 Apache-2.0 许可证开源。
