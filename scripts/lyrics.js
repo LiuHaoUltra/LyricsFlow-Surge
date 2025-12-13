@@ -34,12 +34,7 @@ function getConfig() {
 const CONFIG = getConfig();
 
 function log(level, message) {
-    const levels = ["OFF", "ERROR", "WARN", "INFO", "DEBUG"];
-    const currentLevel = levels.indexOf(CONFIG.LogLevel);
-    const msgLevel = levels.indexOf(level);
-    if (msgLevel <= currentLevel && msgLevel > 0) {
-        console.log(`[LyricsFlow][${level}] ${message}`);
-    }
+    console.log(`[LyricsFlow] [${level}] ${message}`); // Always log to system for now
 }
 
 // ============== Helpers ==============
@@ -177,6 +172,8 @@ function convertToSpotifyFormat(typeFData) {
         }
 
         log("INFO", `Intercepted Track ID: ${trackId}`);
+        log("INFO", `Original Content-Type: ${$response.headers['Content-Type'] || $response.headers['content-type']}`);
+        log("INFO", `Original Status: ${$response.status}`);
 
         // 1. Fetch Metadata from Spotify (using original headers for Auth)
         const metadata = await fetchSpotifyMetadata(trackId, $request.headers);
