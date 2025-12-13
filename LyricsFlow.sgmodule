@@ -1,15 +1,15 @@
 #!name=🎵 LyricsFlow (Surge)
-#!desc=Spotify 歌词增强模块。安装后请点击“编辑配置” 以配置 TypeF 服务器地址。
+#!desc=Spotify 歌词增强模块。点击"编辑配置" 以配置 TypeF 服务器地址。
 #!category=Music
 #!system=ios
 #!arguments=TYPEF_URL:TypeF 后端地址,ENABLE_ENRICH:AI 翻译增强,ENRICH_URL:AI API 地址 (可选),ENRICH_KEY:AI API Key (可选),LogLevel:日志等级 (INFO/WARN/DEBUG)
 
 [Script]
-# Request Script
-LyricsFlow_Req = type=http-request, pattern=^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+, requires-body=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/request.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
+# Request Script - 拦截歌词请求并缓存元数据
+LyricsFlow_Req = type=http-request, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/request.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
 
-# Response Script
-LyricsFlow_Res = type=http-response, pattern=^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/\w+, requires-body=1, binary-body-mode=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/response.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
+# Response Script - 替换歌词响应
+LyricsFlow_Res = type=http-response, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/response.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
 
 [MITM]
-hostname = %APPEND% spclient.wg.spotify.com, episode-transcripts.spotifycdn.com, googleusercontent.com
+hostname = %APPEND% spclient.wg.spotify.com, gae?-spclient.spotify.com, episode-transcripts.spotifycdn.com
