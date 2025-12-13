@@ -125,14 +125,12 @@ function fetchLyricsFromTypeF(metadata) {
 // Convert TypeF JSON to Spotify JSON
 function convertToSpotifyFormat(typeFData) {
     const lines = typeFData.lines.map(line => {
-        // Build line object
-        const lineObj = {
+        return {
             startTimeMs: Math.round(line.st * 1000).toString(),
             words: line.txt,
             syllables: [],
             endTimeMs: Math.round(line.et * 1000).toString()
         };
-        return lineObj;
     });
 
     return {
@@ -149,7 +147,13 @@ function convertToSpotifyFormat(typeFData) {
             isRtlLanguage: false,
             fullscreenAction: "FULLSCREEN_LYRICS",
             showUpsell: false
-        }
+        },
+        colors: {
+            background: -1000,
+            text: -16777216,
+            highlightTaskbar: -1000
+        },
+        hasVocalRemoval: false
     };
 }
 
@@ -179,9 +183,11 @@ function convertToSpotifyFormat(typeFData) {
         if (lyricsData && lyricsData.lines && lyricsData.lines.length > 0) {
             const spotifyLyrics = convertToSpotifyFormat(lyricsData);
             log("INFO", `Success! Returning ${lyricsData.lines.length} lines.`);
+
             $done({
                 body: JSON.stringify(spotifyLyrics),
                 headers: {
+                    ...$response.headers, // Inherit CROS etc
                     "Content-Type": "application/json; charset=utf-8"
                 }
             });
@@ -192,7 +198,6 @@ function convertToSpotifyFormat(typeFData) {
 
     } catch (e) {
         log("ERROR", `Error: ${e}`);
-        // On error, pass through original response
         $done({});
     }
 })();

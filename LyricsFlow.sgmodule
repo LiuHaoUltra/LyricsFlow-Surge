@@ -6,13 +6,12 @@
 #!icon=https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/icon.png
 #!category=🎵 LyricsFlow
 
-#!arguments=TYPEF_URL:http://127.0.0.1:8000,ENABLE_ENRICH:false,ENRICH_URL:,ENRICH_KEY:,LogLevel:WARN
-#!arguments-desc=TYPEF_URL: TypeF服务器地址\nENABLE_ENRICH: 启用AI增强服务\nENRICH_URL: AI API URL\nENRICH_KEY: AI API Key\nLogLevel: 日志级别
+#!arguments=TYPEF_URL:http://127.0.0.1:8000,ENABLE_ENRICH:false,ENRICH_URL:none,ENRICH_KEY:none,LogLevel:WARN
+#!arguments-desc=TYPEF_URL: TypeF Addr\nENABLE_ENRICH: Enable AI (true/false)\nENRICH_URL: AI URL\nENRICH_KEY: AI Key\nLogLevel: Debug Level
 
 [Script]
 # Intercept Spotify Lyrics Request
-LyricsFlow = type=http-response, pattern=https:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/, requires-body=true, script-path=https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/scripts/lyrics.js, max-size=0, argument=TYPEF_URL={{{TYPEF_URL}}}&ENABLE_ENRICH={{{ENABLE_ENRICH}}}&ENRICH_URL={{{ENRICH_URL}}}&ENRICH_KEY={{{ENRICH_KEY}}}&LogLevel={{{LogLevel}}}
+LyricsFlow = type=http-response, pattern=^https?:\/\/spclient\.wg\.spotify\.com\/color-lyrics\/v2\/track\/.+, requires-body=true, script-path=https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/scripts/lyrics.js, max-size=0, argument=TYPEF_URL={{{TYPEF_URL}}}&ENABLE_ENRICH={{{ENABLE_ENRICH}}}&ENRICH_URL={{{ENRICH_URL}}}&ENRICH_KEY={{{ENRICH_KEY}}}&LogLevel={{{LogLevel}}}
 
 [MITM]
 hostname = %APPEND% spclient.wg.spotify.com
-
