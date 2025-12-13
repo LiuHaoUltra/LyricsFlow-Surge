@@ -2,7 +2,7 @@
 #!desc=Spotify 歌词增强模块
 #!category=Music
 #!system=ios
-#!arguments=TYPEF_URL:http://127.0.0.1:8000,ENABLE_ENRICH:false,ENRICH_URL:,ENRICH_KEY:,LogLevel:INFO
+#!arguments=TYPEF_URL:TypeF 后端地址,ENABLE_ENRICH:AI 翻译增强,ENRICH_URL:AI API 地址 (可选),ENRICH_KEY:AI API Key (可选),LogLevel:日志等级
 
 [Script]
 # Request Script - 拦截歌词请求并缓存元数据
