@@ -1,53 +1,73 @@
 {
     "id": "LyricsFlow",
-    "name": "LyricsFlow",
-    "icon": "https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/assets/icon.png",
+    "name": "🎵 LyricsFlow",
+    "author": "@liuhaoultra",
+    "icon": "https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/icon.png",
+    "repo": "https://github.com/liuhaoultra/lyricsflow-surge",
+    "desc": "Spotify 歌词增强模块 - 通过 LyricsFlow-TypeF 后端提供多源聚合歌词",
+    "keys": [
+        "@LyricsFlow.Settings"
+    ],
     "settings": [
         {
             "id": "@LyricsFlow.Settings.TYPEF_URL",
-            "key": "@LyricsFlow.Settings",
+            "name": "[服务器] TypeF 地址",
             "type": "text",
-            "title": "TypeF URL",
-            "desc": "LyricsFlow TypeF 后端服务器地址",
-            "val": "http://127.0.0.1:8000"
+            "val": "http://127.0.0.1:8000",
+            "placeholder": "http://your-server:8000",
+            "desc": "请填写你的 LyricsFlow-TypeF 服务器地址（需部署后端服务）。"
         },
         {
             "id": "@LyricsFlow.Settings.ENABLE_ENRICH",
-            "key": "@LyricsFlow.Settings",
+            "name": "[AI] 启用 AI 增强翻译",
             "type": "boolean",
-            "title": "Enable AI Enrichment",
-            "desc": "开启 AI 增强功能（透传 API Key）",
-            "val": false
+            "val": false,
+            "desc": "开启后，将使用客户端配置的 AI API 对歌词翻译进行增强润色。需配合下方 AI 设置使用。"
         },
         {
             "id": "@LyricsFlow.Settings.ENRICH_URL",
-            "key": "@LyricsFlow.Settings",
+            "name": "[AI] AI 服务 URL",
             "type": "text",
-            "title": "Enrich AI Base URL",
-            "desc": "AI 服务 Base URL (e.g. https://api.openai.com/v1)",
-            "val": ""
+            "val": "",
+            "placeholder": "https://api.openai.com/v1",
+            "desc": "填写 OpenAI 格式兼容的 API 地址（如 OpenRouter、Azure OpenAI 等）。"
         },
         {
             "id": "@LyricsFlow.Settings.ENRICH_KEY",
-            "key": "@LyricsFlow.Settings",
+            "name": "[AI] AI 服务 Key",
             "type": "text",
-            "title": "Enrich AI API Key",
-            "desc": "AI 服务 API Key",
-            "val": ""
+            "val": "",
+            "placeholder": "sk-xxxxxxxx",
+            "desc": "填写你的 AI API Key（请注意保护隐私安全）。"
         },
         {
             "id": "@LyricsFlow.Settings.LogLevel",
-            "key": "@LyricsFlow.Settings",
-            "type": "radios",
-            "title": "Log Level",
-            "desc": "脚本日志等级",
+            "name": "[调试] 日志等级",
+            "type": "selects",
+            "val": "WARN",
             "items": [
-                { "key": "DEBUG", "label": "DEBUG" },
-                { "key": "INFO", "label": "INFO" },
-                { "key": "WARN", "label": "WARN" },
-                { "key": "ERROR", "label": "ERROR" }
+                {
+                    "key": "OFF",
+                    "label": "🔴 关闭"
+                },
+                {
+                    "key": "ERROR",
+                    "label": "❌ 错误"
+                },
+                {
+                    "key": "WARN",
+                    "label": "⚠️ 警告"
+                },
+                {
+                    "key": "INFO",
+                    "label": "ℹ️ 信息"
+                },
+                {
+                    "key": "DEBUG",
+                    "label": "🐛 调试"
+                }
             ],
-            "val": "WARN"
+            "desc": "选择脚本日志的输出等级。建议日常使用设为 WARN。"
         }
     ]
 }

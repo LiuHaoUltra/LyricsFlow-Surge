@@ -16,4 +16,4 @@ LyricsFlow = type=http-response, pattern=^https?:\/\/(.+?-spclient|spclient\.wg)
 LyricsFlow-Request = type=http-request, pattern=^https?:\/\/(.+?-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/[^/]+?.*, requires-body=false, script-path=https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/scripts/lyrics_request.js
 
 [MITM]
-hostname = %APPEND% spclient.wg.spotify.com, *-spclient.spotify.com, *spclient.spotify.com
+hostname = %APPEND% spclient.wg.spotify.com, *-spclient.spotify.com, *spclient.spotify.com, api.spotify.com

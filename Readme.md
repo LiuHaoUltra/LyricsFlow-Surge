@@ -1,59 +1,139 @@
-# LyricsFlow TypeL (Surge Module)
+# 🎵 LyricsFlow-Surge
 
-## 简介 (Introduction)
+> Spotify 歌词增强模块 - 为 Spotify 提供多源聚合歌词和翻译
 
-**LyricsFlow TypeL** 是一个为 Spotify iOS 客户端打造的歌词增强 Surge 模块。它通过拦截 Spotify 内部 API 请求，无缝接入 **LyricsFlow TypeF** 后端，为您提供基于多源聚合（QQ/网易/酷狗等）的精准逐行歌词与翻译体验。
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Surge](https://img.shields.io/badge/Surge-5.0+-orange.svg)](https://nssurge.com/)
 
-> **致谢**: 本项目的 MITM 逻辑与实现参考了 [DualSubs](https://github.com/DualSubs/Spotify) 的优秀工作。
+---
 
-## 核心特性 (Features)
+## 📖 项目介绍
 
-- **多源聚合**: 突破 Spotify 歌词库限制，智能聚合主流中文音乐平台的歌词数据。
-- **精准匹配**: 基于 metadata 与时长模糊匹配算法，解决常见的歌词错配问题。
-- **动态语言**: 支持根据歌词源自动识别语言编码，优化客户端字体渲染。
-- **AI 增强 (可选)**: 支持通过 TypeF 后端透传您的 AI 配置，实现高质量的 AI 辅助翻译 (BYOK)。
+LyricsFlow-Surge 是一个基于 Surge 的 Spotify 歌词增强模块，通过拦截 Spotify 的歌词请求，将其替换为来自 **LyricsFlow-TypeF** 后端服务聚合的多源歌词（支持 QQ音乐、网易云音乐等），并支持双语翻译显示。
 
-## 安装指南 (Installation)
+### 🎯 解决的问题
 
-### 1. 准备工作
-- iOS 设备安装 **Surge 5+**。
-- 确保 **MitM** 功能已开启并正确安装/信任 CA 证书。
-- 部署好 **LyricsFlow TypeF** 后端 (Docker)。
+- Spotify 原生歌词覆盖率有限
+- 歌词翻译数量极少
 
-### 2. 安装模块
-将以下模块地址添加到 Surge 的【模块】列表中：
+---
 
-```text
-https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/LyricsFlow.sgmodule
+## ✨ 主要功能
+
+| 功能 | 描述 |
+|------|------|
+| 🎤 **多源歌词聚合** | 自动从 QQ音乐、网易云音乐等平台匹配最佳歌词 |
+| 🌐 **双语歌词显示** | 原文歌词 + 翻译同时显示 |
+| 🤖 **AI 翻译增强** | 可选使用 AI 服务优化翻译质量 |
+| ⏱️ **逐行同步** | 支持 Line-Synced 歌词时间轴同步 |
+| ⚙️ **灵活配置** | 支持 Surge 参数和 BoxJS 配置 |
+
+---
+
+## 📦 安装步骤
+
+### 环境要求
+
+- **Surge 5.0+** (iOS / macOS)
+- **LyricsFlow-TypeF 后端服务**（需自行部署）
+
+### 方式一：Surge 模块安装（推荐）
+
+1. 打开 Surge → 首页 → 模块
+2. 点击 **新建模块** 或 **从 URL 安装**
+3. 输入模块 URL：
+   ```
+   https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/LyricsFlow.sgmodule
+   ```
+4. 根据模块参数设置中填写你的 TypeF 服务器地址
+
+### 方式二：BoxJS 配置（高级）
+
+1. 确保已安装 [BoxJS](https://boxjs.com)
+2. 在 BoxJS 中添加订阅：
+   ```
+   https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/boxjs.json
+   ```
+3. 前往 BoxJS → 应用 → LyricsFlow 进行配置
+
+---
+
+## ⚙️ 配置说明
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `TYPEF_URL` | string | `http://127.0.0.1:8000` | TypeF 后端服务地址 |
+| `ENABLE_ENRICH` | boolean | `false` | 是否启用 AI 翻译增强 |
+| `ENRICH_URL` | string | - | AI 服务 API 地址（OpenAI 兼容格式） |
+| `ENRICH_KEY` | string | - | AI 服务 API Key |
+| `LogLevel` | enum | `WARN` | 日志等级：OFF/ERROR/WARN/INFO/DEBUG |
+
+### 配置示例
+
+**Surge 模块参数：**
+```
+TYPEF_URL=http://your-server.com:8000&ENABLE_ENRICH=false&LogLevel=WARN
 ```
 
-### 3. (可选) 配置 BoxJS
-虽然模块安装后已可直接工作，但建议使用 BoxJS 进行更方便的配置管理。
+---
 
-- 订阅地址: `https://raw.githubusercontent.com/liuhaoultra/lyricsflow-surge/main/boxjs.json`
-- 在 BoxJS 应用中找到 **LyricsFlow** 进行设置。
+## 🔧 API 要求
 
-## 配置说明 (Configuration)
+本模块需要配合 **LyricsFlow-TypeF** 后端服务使用：
 
-### 方式一：BoxJS (推荐)
-支持可视化配置与持久化存储。
+- **仓库地址**：[LyricsFlow-TypeF](https://github.com/liuhaoultra/lyricsflow-typef)
+- **API 端点**：`POST /v1/match`
+- **请求格式**：
+  ```json
+  {
+    "title": "歌曲名",
+    "artist": "歌手名",
+    "album": "专辑名",
+    "duration_ms": 180000
+  }
+  ```
 
-| 设置项 | 描述 | 默认值 |
-| :--- | :--- | :--- |
-| `TypeF URL` | 您的 TypeF 后端地址 (需公网可访问或局域网互通) | `http://127.0.0.1:8000` |
-| `Enable AI` | 是否开启 AI 增强功能 | `false` |
-| `Enrich URL` | AI API Base URL | - |
-| `Enrich Key` | AI API Key | - |
-| `Log Level` | 日志等级 (建议平时使用 WARN) | `WARN` |
+详细部署说明请参阅 TypeF 项目文档。
 
-### 方式二：Surge 模块参数
-直接在模块定义中修改 argument 参数：
+---
 
-```ini
-[Script]
-lyrics = type=http-request, pattern=..., script-path=..., argument=TYPEF_URL=http%3A%2F%2F192.168.1.5%3A8000&LogLevel=INFO
+## 🏗️ 项目结构
+
+```
+LyricsFlow-Surge/
+├── LyricsFlow.sgmodule    # Surge 模块定义
+├── boxjs.json             # BoxJS 应用配置
+├── boxjs.settings.json    # BoxJS 设置项定义
+├── scripts/
+│   ├── lyrics.js          # 主脚本 - 歌词拦截与转换
+│   ├── lyrics_request.js  # 请求阶段处理脚本
+│   └── config.js          # 配置读取辅助
+├── LICENSE                # Apache 2.0 许可证
+└── README.md              # 本文件
 ```
 
-## API 要求
+---
 
-本模块依赖 **LyricsFlow TypeF** 后端的 `POST /v1/match` 接口。确保您的后端版本 >= 1.0.0 以支持动态语言识别。
+## 🤝 致谢
+
+本项目的开发参考并受启发于以下优秀项目：
+
+- [**🍿️ DualSubs: Spotify**](https://github.com/DualSubs/Spotify) - [@VirgilClyne](https://github.com/VirgilClyne)  
+  参考了其 Spotify 歌词拦截的实现思路、Protobuf 处理模式以及 BoxJS 配置结构
+
+---
+
+## 📄 许可证
+
+本项目基于 [Apache License 2.0](LICENSE) 开源。
+
+---
+
+## 🐛 问题反馈
+
+如遇到问题，请在 [Issues](https://github.com/liuhaoultra/lyricsflow-surge/issues) 中提交，并提供：
+
+1. Surge 版本
+2. iOS/macOS 版本
+3. 日志输出（设置 LogLevel 为 DEBUG）
+4. 问题重现步骤
