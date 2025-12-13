@@ -1,54 +1,43 @@
 import { env } from './utils/env';
 import { logger } from './utils/logger';
 
-// Key prefix for storing metadata in persistent store
 const META_KEY_PREFIX = 'spotify_meta_';
 
 async function handleRequest() {
     const url = env.request.url;
-    logger.debug(`[Request] Intercepted: ${url}`);
-
+    // 确保只处理歌词接口
     if (url.includes('/color-lyrics/v2/track/')) {
         try {
-            // 1. Extract Track ID
-            // URL format: .../track/{trackId}?....
-            // We can split by '/' and find the segment after 'track'
             const parts = url.split('/');
             const trackIndex = parts.indexOf('track');
             let trackId = '';
+            // 提取 Track ID
             if (trackIndex !== -1 && parts[trackIndex + 1]) {
-                // Remove query params if any
                 trackId = parts[trackIndex + 1].split('?')[0];
             }
 
             if (trackId) {
-                logger.info(`[Request] Found Track ID: ${trackId}`);
                 await fetchAndCacheMetadata(trackId);
-            } else {
-                logger.warn(`[Request] Could not extract Track ID from URL: ${url}`);
             }
-
         } catch (err) {
-            logger.error(`[Request] Error processing request: ${err}`);
+            logger.error(`[Request] Error: ${err}`);
         }
     }
-
-    // Always release the request
     env.done({});
 }
 
 async function fetchAndCacheMetadata(trackId: string) {
-    // 2. Construct Metadata Request
-    // Using the same Authorization header from the original request
     const headers = env.request.headers || {};
+    // 关键：复用当前请求的 Authorization 头
     const authHeader = headers['Authorization'] || headers['authorization'];
 
     if (!authHeader) {
-        logger.warn(`[Request] No Authorization header found. Cannot fetch metadata.`);
+        logger.warn(`[Request] No Auth Header`);
         return;
     }
 
-    const metaUrl = `https://api.spotify.com/v1/tracks?ids=${trackId}`;
+    // 修正：直接请求 Spotify 官方 Web API (返回 JSON)
+    const metaUrl = `https://api.spotify.com/v1/tracks/${trackId}`;
 
     try {
         const response = await env.fetch({
@@ -62,30 +51,26 @@ async function fetchAndCacheMetadata(trackId: string) {
 
         if (response.status === 200 && response.body) {
             const data = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
-            if (data.tracks && data.tracks.length > 0) {
-                const track = data.tracks[0];
-                const meta = {
-                    trackName: track.name,
-                    artist: track.artists ? track.artists.map((a: any) => a.name).join(', ') : 'Unknown',
-                    album: track.album ? track.album.name : 'Unknown',
-                    duration: track.duration_ms
-                };
 
-                // 3. Store in Persistent Store
-                const key = `${META_KEY_PREFIX}${trackId}`;
-                env.setStorage(key, JSON.stringify(meta));
-                logger.info(`[Request] Cached metadata for ${trackId}: ${meta.trackName}`);
-            }
+            // 提取需要的元数据
+            const meta = {
+                trackName: data.name,
+                artist: data.artists ? data.artists.map((a: any) => a.name).join(', ') : 'Unknown',
+                album: data.album ? data.album.name : 'Unknown',
+                duration: data.duration_ms
+            };
+
+            // 写入持久化缓存
+            env.setStorage(`${META_KEY_PREFIX}${trackId}`, JSON.stringify(meta));
+            logger.info(`[Request] Cached metadata: ${meta.trackName}`);
         } else {
             logger.warn(`[Request] Metadata fetch failed: ${response.status}`);
         }
     } catch (err) {
-        logger.error(`[Request] Metadata fetch error: ${err}`);
+        logger.error(`[Request] Fetch Error: ${err}`);
     }
 }
 
-// Global execution
 handleRequest().catch(err => {
-    logger.error("Global Request Handler Error:", err);
     env.done({});
 });
