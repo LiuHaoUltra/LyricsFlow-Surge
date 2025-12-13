@@ -6,10 +6,14 @@ import { createLyricsResponse, TypeFLyricsData } from './utils/protoHelper';
 const META_KEY_PREFIX = 'spotify_meta_';
 
 async function handleResponse() {
+    // 始终输出启动日志，无论 log level 配置如何
+    console.log('[LyricsFlow] Response script started');
+
     const url = env.request.url;
     const config = parseConfig(env.args);
     (logger as any).level = config.logLevel;
 
+    console.log(`[LyricsFlow] Config: typefUrl=${config.typefUrl}, logLevel=${config.logLevel}`);
     logger.debug(`[Response] Intercepted: ${url}`);
 
     if (url.includes('/color-lyrics/v2/track/')) {

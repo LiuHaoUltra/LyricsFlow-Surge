@@ -11,7 +11,7 @@ export interface Config {
 const DEFAULT_CONFIG: Config = {
     typefUrl: 'http://127.0.0.1:8000',
     enableEnrich: false,
-    logLevel: LogLevel.WARN,
+    logLevel: LogLevel.DEBUG,  // 默认 DEBUG 方便调试
 };
 
 export function parseConfig(argsStr: string): Config {
