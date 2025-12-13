@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package spotify.lyrics;
+
+option java_package = "com.spotify.lyrics.proto";
+option java_multiple_files = true;
+
+enum SyncType {
+  UNSYNCED = 0;
+  LINE_SYNCED = 1;
+  SYLLABLE_SYNCED = 2;
+}
+
+message ColorData {
+  int32 red = 1;
+  int32 green = 2;
+  int32 blue = 3;
+  int32 alpha = 4; // usually 255
+}
+
+message Syllable {
+  int64 startTimeMs = 1;
+  int64 endTimeMs = 2; // derived or explicit
+  string content = 3;
+}
+
+message Line {
+  string content = 1;
+  int64 startTimeMs = 2;
+  repeated Syllable syllables = 3;
+}
+
+message LyricsResponse {
+  SyncType syncType = 1;
+  repeated Line lines = 2;
+  string provider = 3;
+  string providerLyricsId = 4;
+  string providerDisplayName = 5;
+  string syncLyricsUri = 6;
+  bool isDenseTypeface = 7;
+  repeated Line alternatives = 8;
+  string language = 9;
+  ColorData backgroundColor = 10;
+  ColorData textColor = 11;
+}

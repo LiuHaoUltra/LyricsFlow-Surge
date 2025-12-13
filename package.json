@@ -1,0 +1,30 @@
+{
+    "name": "lyricsflow-surge",
+    "version": "1.0.0",
+    "description": "Surge script for LyricsFlow to inject custom lyrics into Spotify",
+    "main": "dist/lyrics-flow.js",
+    "scripts": {
+        "build": "rspack build",
+        "dev": "rspack build --watch",
+        "proto:gen": "pbjs -t static-module -w commonjs -o src/protobuf/spotify/lyrics.js src/protobuf/spotify/lyrics.proto && pbts -o src/protobuf/spotify/lyrics.d.ts src/protobuf/spotify/lyrics.js"
+    },
+    "keywords": [
+        "surge",
+        "spotify",
+        "lyrics",
+        "protobuf"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "protobufjs": "^7.2.5"
+    },
+    "devDependencies": {
+        "@rspack/cli": "^0.4.0",
+        "@rspack/core": "^0.4.0",
+        "protobufjs-cli": "^1.1.3",
+        "ts-loader": "^9.5.0",
+        "ts-proto": "^1.157.0",
+        "typescript": "^5.0.0"
+    }
+}
