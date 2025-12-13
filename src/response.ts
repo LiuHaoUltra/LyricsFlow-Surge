@@ -39,18 +39,16 @@ async function handleResponse() {
             const meta = JSON.parse(metaStr);
             logger.info(`[Response] Processing for: ${meta.trackName} - ${meta.artist}`);
 
+            // 检查 TYPEF_URL 是否被正确替换
+            if (config.typefUrl.includes('{TYPEF_URL}') || config.typefUrl.includes('%7BTYPEF_URL%7D')) {
+                logger.error(`[Response] TYPEF_URL argument not configured! Please set it in Surge module settings.`);
+                env.done({});
+                return;
+            }
+
             // 3. Request Lyrics from TypeF
-            // Defaulting to standard path /api/v1/lyrics/match unless configured otherwise
-            // User said: POST {TYPEF_URL}/api/v1/lyrics/search? No, models said /match.
-            // I'll stick to /api/v1/match or similar. I'll use /match per analysis.
-            // Assuming TYPEF_URL includes the base, e.g. http://127.0.0.1:8000
-            // Request path: /api/v1/match? Nope, lets try /match directly if user sets root?
-            // Default TYPEF_URL is http://127.0.0.1:8000.
-            // Endpoints in main.py usually mount with prefix. 
-            // I'll use `${config.typefUrl}/match` if the user didn't specify path.
-            // Actually, standard FastAPI is often just `/match` if defined in root, or `/api/v1/match`.
-            // Let's assume `/api/v1/lyrics/match` based on structure `app/api/endpoints/lyrics.py`.
-            const apiUrl = `${config.typefUrl.replace(/\/$/, '')}/api/v1/lyrics/match`;
+            // TypeF API route: /v1/match (defined in main.py: prefix="/v1")
+            const apiUrl = `${config.typefUrl.replace(/\/$/, '')}/v1/match`;
 
             const payload = {
                 title: meta.trackName,
