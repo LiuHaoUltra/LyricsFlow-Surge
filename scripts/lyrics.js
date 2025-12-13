@@ -125,9 +125,15 @@ function fetchLyricsFromTypeF(metadata) {
 // Convert TypeF JSON to Spotify JSON
 function convertToSpotifyFormat(typeFData) {
     const lines = typeFData.lines.map(line => {
+        let finalWords = line.txt;
+        if (line.trans) {
+            // Append translation with a newline for Dual-Sub effect
+            finalWords += `\n${line.trans}`;
+        }
+
         return {
             startTimeMs: Math.round(line.st * 1000).toString(),
-            words: line.txt,
+            words: finalWords,
             syllables: [],
             endTimeMs: Math.round(line.et * 1000).toString()
         };
