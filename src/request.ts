@@ -1,10 +1,17 @@
 import { env } from './utils/env';
 import { logger } from './utils/logger';
+import { parseConfig } from './config';
 
 const META_KEY_PREFIX = 'spotify_meta_';
 
 async function handleRequest() {
+    // 初始化配置和日志级别
+    const config = parseConfig(env.args);
+    (logger as any).level = config.logLevel;
+
     const url = env.request.url;
+    logger.info(`[Request] Intercepted: ${url}`);
+
     // 确保只处理歌词接口
     if (url.includes('/color-lyrics/v2/track/')) {
         try {
@@ -17,13 +24,15 @@ async function handleRequest() {
             }
 
             if (trackId) {
+                logger.debug(`[Request] Track ID: ${trackId}`);
                 await fetchAndCacheMetadata(trackId);
             }
         } catch (err) {
             logger.error(`[Request] Error: ${err}`);
         }
     }
-    env.done({});
+    // 关键修复：返回原始 $request 对象，让请求继续
+    env.done(env.request);
 }
 
 async function fetchAndCacheMetadata(trackId: string) {
@@ -72,5 +81,6 @@ async function fetchAndCacheMetadata(trackId: string) {
 }
 
 handleRequest().catch(err => {
-    env.done({});
+    logger.error(`[Request] Global Error: ${err}`);
+    env.done(env.request);
 });
