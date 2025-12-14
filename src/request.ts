@@ -4,48 +4,58 @@ import { parseConfig } from './config';
 
 const META_KEY_PREFIX = 'spotify_meta_';
 
+/**
+ * Request Script - Following DualSubs Architecture
+ * 1. Inject subtype=LyricsFlow into URL to trigger response script
+ * 2. Fetch metadata in parallel (non-blocking)
+ * 3. Return modified request immediately
+ */
 async function handleRequest() {
-    // 初始化配置和日志级别
     const config = parseConfig(env.args);
     (logger as any).level = config.logLevel;
 
-    const url = env.request.url;
-    logger.info(`[Request] Intercepted: ${url}`);
+    const url = new URL(env.request.url);
+    logger.info(`[Request] Intercepted: ${url.pathname}`);
 
-    // 确保只处理歌词接口
-    if (url.includes('/color-lyrics/v2/track/')) {
-        try {
-            const parts = url.split('/');
-            const trackIndex = parts.indexOf('track');
-            let trackId = '';
-            // 提取 Track ID
-            if (trackIndex !== -1 && parts[trackIndex + 1]) {
-                trackId = parts[trackIndex + 1].split('?')[0];
-            }
+    // Only process color-lyrics requests
+    if (url.pathname.startsWith('/color-lyrics/v2/track/')) {
+        // Extract track ID from path
+        const pathParts = url.pathname.split('/');
+        const trackId = pathParts[4]; // /color-lyrics/v2/track/{trackId}
 
-            if (trackId) {
-                logger.debug(`[Request] Track ID: ${trackId}`);
-                await fetchAndCacheMetadata(trackId);
-            }
-        } catch (err) {
-            logger.error(`[Request] Error: ${err}`);
+        if (trackId) {
+            logger.debug(`[Request] Track ID: ${trackId}`);
+
+            // 1. Inject subtype param - THIS TRIGGERS THE RESPONSE SCRIPT
+            url.searchParams.set('subtype', 'LyricsFlow');
+            logger.info(`[Request] Injected subtype=LyricsFlow`);
+
+            // 2. Fetch metadata in parallel (non-blocking, fire-and-forget)
+            fetchMetadataAsync(trackId).catch(e =>
+                logger.error(`[Request] Metadata fetch error: ${e}`)
+            );
+
+            // 3. Update request URL with new params
+            env.request.url = url.toString();
         }
     }
-    // 关键修复：返回原始 $request 对象，让请求继续
+
+    // Always call done() with the (possibly modified) request
     env.done(env.request);
 }
 
-async function fetchAndCacheMetadata(trackId: string) {
+/**
+ * Async metadata fetch - runs in background, doesn't block request
+ */
+async function fetchMetadataAsync(trackId: string) {
     const headers = env.request.headers || {};
-    // 关键：复用当前请求的 Authorization 头
     const authHeader = headers['Authorization'] || headers['authorization'];
 
     if (!authHeader) {
-        logger.warn(`[Request] No Auth Header`);
+        logger.warn(`[Request] No Auth Header, skipping metadata fetch`);
         return;
     }
 
-    // 修正：直接请求 Spotify 官方 Web API (返回 JSON)
     const metaUrl = `https://api.spotify.com/v1/tracks/${trackId}`;
 
     try {
@@ -59,9 +69,10 @@ async function fetchAndCacheMetadata(trackId: string) {
         });
 
         if (response.status === 200 && response.body) {
-            const data = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+            const data = typeof response.body === 'string'
+                ? JSON.parse(response.body)
+                : response.body;
 
-            // 提取需要的元数据
             const meta = {
                 trackName: data.name,
                 artist: data.artists ? data.artists.map((a: any) => a.name).join(', ') : 'Unknown',
@@ -69,17 +80,18 @@ async function fetchAndCacheMetadata(trackId: string) {
                 duration: data.duration_ms
             };
 
-            // 写入持久化缓存
+            // Store with track ID as key
             env.setStorage(`${META_KEY_PREFIX}${trackId}`, JSON.stringify(meta));
-            logger.info(`[Request] Cached metadata: ${meta.trackName}`);
+            logger.info(`[Request] Cached: ${meta.trackName} - ${meta.artist}`);
         } else {
-            logger.warn(`[Request] Metadata fetch failed: ${response.status}`);
+            logger.warn(`[Request] Metadata fetch returned ${response.status}`);
         }
     } catch (err) {
-        logger.error(`[Request] Fetch Error: ${err}`);
+        logger.error(`[Request] Fetch error: ${err}`);
     }
 }
 
+// Execute
 handleRequest().catch(err => {
     logger.error(`[Request] Global Error: ${err}`);
     env.done(env.request);

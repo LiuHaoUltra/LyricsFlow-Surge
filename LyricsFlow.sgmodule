@@ -8,8 +8,8 @@
 # Request Script - 拦截歌词请求并缓存元数据
 LyricsFlow_Req = type=http-request, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, timeout=30, debug=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/request.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
 
-# Response Script - 替换歌词响应 (timeout=30 允许慢速服务器)
-LyricsFlow_Res = type=http-response, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, timeout=30, debug=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/response.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
+# Response Script - 只匹配带 subtype=LyricsFlow 参数的请求
+LyricsFlow_Res = type=http-response, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*)subtype=LyricsFlow, requires-body=1, binary-body-mode=1, timeout=30, debug=1, script-path=https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/dist/response.js, argument=TYPEF_URL={TYPEF_URL}&ENABLE_ENRICH={ENABLE_ENRICH}&ENRICH_URL={ENRICH_URL}&ENRICH_KEY={ENRICH_KEY}&LogLevel={LogLevel}
 
 [MITM]
 hostname = %APPEND% api.spotify.com, spclient.wg.spotify.com, gae?-spclient.spotify.com
