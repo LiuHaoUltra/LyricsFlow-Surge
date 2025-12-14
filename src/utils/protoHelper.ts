@@ -48,6 +48,19 @@ export function createLyricsResponse(lyricData: TypeFLyricsData): Uint8Array {
         : spotify.lyrics.SyncType.LINE_SYNCED;
 
     // Create the inner LyricsResponse
+    // Build alternatives from translations (this enables the translation button!)
+    const hasTranslations = lyricData.lines.some(line => line.trans);
+    const alternatives = hasTranslations ? [
+        spotify.lyrics.Alternative.create({
+            language: "zh-Hans",
+            lines: lyricData.lines.map(line => line.trans || ""),
+            rtlLang: false
+        })
+    ] : [];
+
+    // Detect primary language from lyrics content
+    const primaryLanguage = hasTranslations ? "ja" : "en"; // Assume Japanese if has translations
+
     const lyricsResponse = spotify.lyrics.LyricsResponse.create({
         syncType: syncType,
         lines: lines,
@@ -56,8 +69,8 @@ export function createLyricsResponse(lyricData: TypeFLyricsData): Uint8Array {
         providerDisplayName: "LyricsFlow by TypeF",
         syncLyricsUri: "",
         isDenseTypeface: true,
-        alternatives: [],
-        language: "en",
+        alternatives: alternatives,
+        language: primaryLanguage,
         isRtlLanguage: false,
         fullscreenAction: 0,
         showUpsell: false
