@@ -1,8 +1,8 @@
 #!name=🎵 LyricsFlow (Surge)
-#!desc=Spotify 歌词增强模块
+#!desc=Spotify 歌词增强模块 - 请在模块设置中配置 TYPEF_URL
 #!category=Music
 #!system=ios
-#!arguments=TYPEF_URL:TypeF 后端地址,ENABLE_ENRICH:AI 翻译增强,ENRICH_URL:AI API 地址 (可选),ENRICH_KEY:AI API Key (可选),LogLevel:日志等级
+#!arguments=TYPEF_URL:https://example.com,ENABLE_ENRICH:false,ENRICH_URL:,ENRICH_KEY:,LogLevel:DEBUG
 
 [Script]
 # Request Script - 拦截歌词请求并缓存元数据
