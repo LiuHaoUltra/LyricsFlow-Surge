@@ -1,0 +1,14 @@
+#!name=🎵 LyricsFlow TEST (本地测试)
+#!desc=测试脚本是否被触发
+#!category=Test
+#!system=ios
+
+[Script]
+# 测试请求脚本
+Test_Req = type=http-request, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, debug=1, script-path=test-request.js
+
+# 测试响应脚本  
+Test_Res = type=http-response, pattern=^https?:\/\/(gae\d-spclient|spclient\.wg)\.spotify\.com(:443)?\/color-lyrics\/v2\/track\/\w+\?(.*), requires-body=1, binary-body-mode=1, debug=1, script-path=test-response.js
+
+[MITM]
+hostname = %APPEND% api.spotify.com, spclient.wg.spotify.com, gae?-spclient.spotify.com
