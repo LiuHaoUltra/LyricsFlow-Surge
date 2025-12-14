@@ -7,8 +7,8 @@ const META_KEY_PREFIX = 'spotify_meta_';
 /**
  * Request Script - Following DualSubs Architecture
  * 1. Inject subtype=LyricsFlow into URL to trigger response script
- * 2. Fetch metadata in parallel (non-blocking)
- * 3. Return modified request immediately
+ * 2. WAIT for metadata fetch to complete (critical for response script!)
+ * 3. Return modified request
  */
 async function handleRequest() {
     const config = parseConfig(env.args);
@@ -30,10 +30,12 @@ async function handleRequest() {
             url.searchParams.set('subtype', 'LyricsFlow');
             logger.info(`[Request] Injected subtype=LyricsFlow`);
 
-            // 2. Fetch metadata in parallel (non-blocking, fire-and-forget)
-            fetchMetadataAsync(trackId).catch(e =>
-                logger.error(`[Request] Metadata fetch error: ${e}`)
-            );
+            // 2. AWAIT metadata fetch - must complete before response script runs!
+            try {
+                await fetchMetadata(trackId);
+            } catch (e) {
+                logger.error(`[Request] Metadata fetch failed: ${e}`);
+            }
 
             // 3. Update request URL with new params
             env.request.url = url.toString();
@@ -45,9 +47,9 @@ async function handleRequest() {
 }
 
 /**
- * Async metadata fetch - runs in background, doesn't block request
+ * Fetch and cache metadata - MUST complete before returning
  */
-async function fetchMetadataAsync(trackId: string) {
+async function fetchMetadata(trackId: string) {
     const headers = env.request.headers || {};
     const authHeader = headers['Authorization'] || headers['authorization'];
 
@@ -57,37 +59,34 @@ async function fetchMetadataAsync(trackId: string) {
     }
 
     const metaUrl = `https://api.spotify.com/v1/tracks/${trackId}`;
+    logger.debug(`[Request] Fetching metadata from: ${metaUrl}`);
 
-    try {
-        const response = await env.fetch({
-            url: metaUrl,
-            method: 'GET',
-            headers: {
-                'Authorization': authHeader,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (response.status === 200 && response.body) {
-            const data = typeof response.body === 'string'
-                ? JSON.parse(response.body)
-                : response.body;
-
-            const meta = {
-                trackName: data.name,
-                artist: data.artists ? data.artists.map((a: any) => a.name).join(', ') : 'Unknown',
-                album: data.album ? data.album.name : 'Unknown',
-                duration: data.duration_ms
-            };
-
-            // Store with track ID as key
-            env.setStorage(`${META_KEY_PREFIX}${trackId}`, JSON.stringify(meta));
-            logger.info(`[Request] Cached: ${meta.trackName} - ${meta.artist}`);
-        } else {
-            logger.warn(`[Request] Metadata fetch returned ${response.status}`);
+    const response = await env.fetch({
+        url: metaUrl,
+        method: 'GET',
+        headers: {
+            'Authorization': authHeader,
+            'Accept': 'application/json'
         }
-    } catch (err) {
-        logger.error(`[Request] Fetch error: ${err}`);
+    });
+
+    if (response.status === 200 && response.body) {
+        const data = typeof response.body === 'string'
+            ? JSON.parse(response.body)
+            : response.body;
+
+        const meta = {
+            trackName: data.name,
+            artist: data.artists ? data.artists.map((a: any) => a.name).join(', ') : 'Unknown',
+            album: data.album ? data.album.name : 'Unknown',
+            duration: data.duration_ms
+        };
+
+        // Store with track ID as key
+        env.setStorage(`${META_KEY_PREFIX}${trackId}`, JSON.stringify(meta));
+        logger.info(`[Request] Cached: ${meta.trackName} - ${meta.artist}`);
+    } else {
+        logger.warn(`[Request] Metadata fetch returned ${response.status}`);
     }
 }
 
