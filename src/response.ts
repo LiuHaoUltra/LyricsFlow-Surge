@@ -28,7 +28,7 @@ async function handleResponse() {
 
             if (!trackId) {
                 logger.warn(`[Response] No track ID found.`);
-                env.done({});
+                // 返回原始响应，保留 Spotify 歌词
                 return;
             }
 
@@ -36,7 +36,7 @@ async function handleResponse() {
             const metaStr = env.getStorage(`${META_KEY_PREFIX}${trackId}`);
             if (!metaStr) {
                 logger.warn(`[Response] No metadata cached for ${trackId}.`);
-                env.done({});
+                // 返回原始响应，保留 Spotify 歌词
                 return;
             }
 
@@ -46,7 +46,7 @@ async function handleResponse() {
             // 检查 TYPEF_URL 是否被正确替换
             if (config.typefUrl.includes('{TYPEF_URL}') || config.typefUrl.includes('%7BTYPEF_URL%7D')) {
                 logger.error(`[Response] TYPEF_URL argument not configured! Please set it in Surge module settings.`);
-                env.done({});
+                // 返回原始响应，保留 Spotify 歌词
                 return;
             }
 
@@ -70,7 +70,8 @@ async function handleResponse() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                timeout: 25000  // 25秒超时，适应慢速服务器
             });
 
             if (resp.status === 200 && resp.body) {
@@ -96,19 +97,22 @@ async function handleResponse() {
                 return;
 
             } else {
-                logger.warn(`[Response] TypeF returned ${resp.status}`);
+                logger.warn(`[Response] TypeF returned ${resp.status}, using original lyrics`);
+                // 返回原始响应
+                return;
             }
 
         } catch (err) {
-            logger.error(`[Response] Error: ${err}`);
+            logger.error(`[Response] Error: ${err}, using original lyrics`);
+            // 返回原始响应，保留 Spotify 歌词
+            return;
         }
     }
 
-    // Fallback: return original response
-    env.done({});
+    // 非歌词请求或其他情况：返回原始响应
 }
 
 handleResponse().catch(err => {
     logger.error("Global Response Error:", err);
-    env.done({});
+    // 不调用 done，让 Surge 返回原始响应
 });
