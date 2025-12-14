@@ -1,0 +1,76 @@
+{
+    "id": "LyricsFlow.Spotify",
+    "name": "🎵 LyricsFlow",
+    "author": "@LiuHaoUltra",
+    "icon": "https://raw.githubusercontent.com/LiuHaoUltra/LyricsFlow-Surge/main/icon.png",
+    "desc": "Spotify 歌词增强模块",
+    "keys": [
+        "@LyricsFlow.Settings.TYPEF_URL",
+        "@LyricsFlow.Settings.ENABLE_ENRICH",
+        "@LyricsFlow.Settings.ENRICH_URL",
+        "@LyricsFlow.Settings.ENRICH_KEY",
+        "@LyricsFlow.Settings.LogLevel"
+    ],
+    "settings": [
+        {
+            "id": "@LyricsFlow.Settings.TYPEF_URL",
+            "name": "TypeF 后端地址",
+            "type": "text",
+            "val": "",
+            "placeholder": "https://your-server.com",
+            "desc": "必填，TypeF 歌词服务后端地址"
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENABLE_ENRICH",
+            "name": "启用 AI 翻译增强",
+            "type": "boolean",
+            "val": false,
+            "desc": "是否启用 AI 翻译增强"
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENRICH_URL",
+            "name": "AI API 地址",
+            "type": "text",
+            "val": "",
+            "placeholder": "https://api.openai.com/v1",
+            "desc": "可选，AI API 地址"
+        },
+        {
+            "id": "@LyricsFlow.Settings.ENRICH_KEY",
+            "name": "AI API Key",
+            "type": "text",
+            "val": "",
+            "placeholder": "sk-xxx",
+            "desc": "可选，AI API 密钥"
+        },
+        {
+            "id": "@LyricsFlow.Settings.LogLevel",
+            "name": "日志等级",
+            "type": "selects",
+            "val": "DEBUG",
+            "items": [
+                {
+                    "key": "OFF",
+                    "label": "🔴 关闭"
+                },
+                {
+                    "key": "ERROR",
+                    "label": "❌ 错误"
+                },
+                {
+                    "key": "WARN",
+                    "label": "⚠️ 警告"
+                },
+                {
+                    "key": "INFO",
+                    "label": "ℹ️ 信息"
+                },
+                {
+                    "key": "DEBUG",
+                    "label": "🅱️ 调试"
+                }
+            ],
+            "desc": "选择脚本日志的输出等级"
+        }
+    ]
+}
