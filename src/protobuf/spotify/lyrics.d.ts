@@ -134,11 +134,8 @@ export namespace spotify {
             /** Syllable startTimeMs */
             startTimeMs?: (number|Long|null);
 
-            /** Syllable endTimeMs */
-            endTimeMs?: (number|Long|null);
-
-            /** Syllable content */
-            content?: (string|null);
+            /** Syllable numChars */
+            numChars?: (number|Long|null);
         }
 
         /** Represents a Syllable. */
@@ -153,11 +150,8 @@ export namespace spotify {
             /** Syllable startTimeMs. */
             public startTimeMs: (number|Long);
 
-            /** Syllable endTimeMs. */
-            public endTimeMs: (number|Long);
-
-            /** Syllable content. */
-            public content: string;
+            /** Syllable numChars. */
+            public numChars: (number|Long);
 
             /**
              * Creates a new Syllable instance using the specified properties.
@@ -237,109 +231,218 @@ export namespace spotify {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a Line. */
-        interface ILine {
+        /** Properties of a LyricsLine. */
+        interface ILyricsLine {
 
-            /** Line content */
-            content?: (string|null);
-
-            /** Line startTimeMs */
+            /** LyricsLine startTimeMs */
             startTimeMs?: (number|Long|null);
 
-            /** Line syllables */
+            /** LyricsLine words */
+            words?: (string|null);
+
+            /** LyricsLine syllables */
             syllables?: (spotify.lyrics.ISyllable[]|null);
         }
 
-        /** Represents a Line. */
-        class Line implements ILine {
+        /** Represents a LyricsLine. */
+        class LyricsLine implements ILyricsLine {
 
             /**
-             * Constructs a new Line.
+             * Constructs a new LyricsLine.
              * @param [properties] Properties to set
              */
-            constructor(properties?: spotify.lyrics.ILine);
+            constructor(properties?: spotify.lyrics.ILyricsLine);
 
-            /** Line content. */
-            public content: string;
-
-            /** Line startTimeMs. */
+            /** LyricsLine startTimeMs. */
             public startTimeMs: (number|Long);
 
-            /** Line syllables. */
+            /** LyricsLine words. */
+            public words: string;
+
+            /** LyricsLine syllables. */
             public syllables: spotify.lyrics.ISyllable[];
 
             /**
-             * Creates a new Line instance using the specified properties.
+             * Creates a new LyricsLine instance using the specified properties.
              * @param [properties] Properties to set
-             * @returns Line instance
+             * @returns LyricsLine instance
              */
-            public static create(properties?: spotify.lyrics.ILine): spotify.lyrics.Line;
+            public static create(properties?: spotify.lyrics.ILyricsLine): spotify.lyrics.LyricsLine;
 
             /**
-             * Encodes the specified Line message. Does not implicitly {@link spotify.lyrics.Line.verify|verify} messages.
-             * @param message Line message or plain object to encode
+             * Encodes the specified LyricsLine message. Does not implicitly {@link spotify.lyrics.LyricsLine.verify|verify} messages.
+             * @param message LyricsLine message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: spotify.lyrics.ILine, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: spotify.lyrics.ILyricsLine, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified Line message, length delimited. Does not implicitly {@link spotify.lyrics.Line.verify|verify} messages.
-             * @param message Line message or plain object to encode
+             * Encodes the specified LyricsLine message, length delimited. Does not implicitly {@link spotify.lyrics.LyricsLine.verify|verify} messages.
+             * @param message LyricsLine message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: spotify.lyrics.ILine, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: spotify.lyrics.ILyricsLine, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Decodes a Line message from the specified reader or buffer.
+             * Decodes a LyricsLine message from the specified reader or buffer.
              * @param reader Reader or buffer to decode from
              * @param [length] Message length if known beforehand
-             * @returns Line
+             * @returns LyricsLine
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): spotify.lyrics.Line;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): spotify.lyrics.LyricsLine;
 
             /**
-             * Decodes a Line message from the specified reader or buffer, length delimited.
+             * Decodes a LyricsLine message from the specified reader or buffer, length delimited.
              * @param reader Reader or buffer to decode from
-             * @returns Line
+             * @returns LyricsLine
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): spotify.lyrics.Line;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): spotify.lyrics.LyricsLine;
 
             /**
-             * Verifies a Line message.
+             * Verifies a LyricsLine message.
              * @param message Plain object to verify
              * @returns `null` if valid, otherwise the reason why it is not
              */
             public static verify(message: { [k: string]: any }): (string|null);
 
             /**
-             * Creates a Line message from a plain object. Also converts values to their respective internal types.
+             * Creates a LyricsLine message from a plain object. Also converts values to their respective internal types.
              * @param object Plain object
-             * @returns Line
+             * @returns LyricsLine
              */
-            public static fromObject(object: { [k: string]: any }): spotify.lyrics.Line;
+            public static fromObject(object: { [k: string]: any }): spotify.lyrics.LyricsLine;
 
             /**
-             * Creates a plain object from a Line message. Also converts values to other types if specified.
-             * @param message Line
+             * Creates a plain object from a LyricsLine message. Also converts values to other types if specified.
+             * @param message LyricsLine
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: spotify.lyrics.Line, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: spotify.lyrics.LyricsLine, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
-             * Converts this Line to JSON.
+             * Converts this LyricsLine to JSON.
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
 
             /**
-             * Gets the default type url for Line
+             * Gets the default type url for LyricsLine
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an Alternative. */
+        interface IAlternative {
+
+            /** Alternative language */
+            language?: (string|null);
+
+            /** Alternative lines */
+            lines?: (string[]|null);
+
+            /** Alternative rtlLang */
+            rtlLang?: (boolean|null);
+        }
+
+        /** Represents an Alternative. */
+        class Alternative implements IAlternative {
+
+            /**
+             * Constructs a new Alternative.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: spotify.lyrics.IAlternative);
+
+            /** Alternative language. */
+            public language: string;
+
+            /** Alternative lines. */
+            public lines: string[];
+
+            /** Alternative rtlLang. */
+            public rtlLang: boolean;
+
+            /**
+             * Creates a new Alternative instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Alternative instance
+             */
+            public static create(properties?: spotify.lyrics.IAlternative): spotify.lyrics.Alternative;
+
+            /**
+             * Encodes the specified Alternative message. Does not implicitly {@link spotify.lyrics.Alternative.verify|verify} messages.
+             * @param message Alternative message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: spotify.lyrics.IAlternative, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Alternative message, length delimited. Does not implicitly {@link spotify.lyrics.Alternative.verify|verify} messages.
+             * @param message Alternative message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: spotify.lyrics.IAlternative, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Alternative message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Alternative
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): spotify.lyrics.Alternative;
+
+            /**
+             * Decodes an Alternative message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Alternative
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): spotify.lyrics.Alternative;
+
+            /**
+             * Verifies an Alternative message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Alternative message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Alternative
+             */
+            public static fromObject(object: { [k: string]: any }): spotify.lyrics.Alternative;
+
+            /**
+             * Creates a plain object from an Alternative message. Also converts values to other types if specified.
+             * @param message Alternative
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: spotify.lyrics.Alternative, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Alternative to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Alternative
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
@@ -353,7 +456,7 @@ export namespace spotify {
             syncType?: (spotify.lyrics.SyncType|null);
 
             /** LyricsResponse lines */
-            lines?: (spotify.lyrics.ILine[]|null);
+            lines?: (spotify.lyrics.ILyricsLine[]|null);
 
             /** LyricsResponse provider */
             provider?: (string|null);
@@ -371,16 +474,19 @@ export namespace spotify {
             isDenseTypeface?: (boolean|null);
 
             /** LyricsResponse alternatives */
-            alternatives?: (spotify.lyrics.ILine[]|null);
+            alternatives?: (spotify.lyrics.IAlternative[]|null);
 
             /** LyricsResponse language */
             language?: (string|null);
 
-            /** LyricsResponse backgroundColor */
-            backgroundColor?: (spotify.lyrics.IColorData|null);
+            /** LyricsResponse isRtlLanguage */
+            isRtlLanguage?: (boolean|null);
 
-            /** LyricsResponse textColor */
-            textColor?: (spotify.lyrics.IColorData|null);
+            /** LyricsResponse fullscreenAction */
+            fullscreenAction?: (number|null);
+
+            /** LyricsResponse showUpsell */
+            showUpsell?: (boolean|null);
         }
 
         /** Represents a LyricsResponse. */
@@ -396,7 +502,7 @@ export namespace spotify {
             public syncType: spotify.lyrics.SyncType;
 
             /** LyricsResponse lines. */
-            public lines: spotify.lyrics.ILine[];
+            public lines: spotify.lyrics.ILyricsLine[];
 
             /** LyricsResponse provider. */
             public provider: string;
@@ -414,16 +520,19 @@ export namespace spotify {
             public isDenseTypeface: boolean;
 
             /** LyricsResponse alternatives. */
-            public alternatives: spotify.lyrics.ILine[];
+            public alternatives: spotify.lyrics.IAlternative[];
 
             /** LyricsResponse language. */
             public language: string;
 
-            /** LyricsResponse backgroundColor. */
-            public backgroundColor?: (spotify.lyrics.IColorData|null);
+            /** LyricsResponse isRtlLanguage. */
+            public isRtlLanguage: boolean;
 
-            /** LyricsResponse textColor. */
-            public textColor?: (spotify.lyrics.IColorData|null);
+            /** LyricsResponse fullscreenAction. */
+            public fullscreenAction: number;
+
+            /** LyricsResponse showUpsell. */
+            public showUpsell: boolean;
 
             /**
              * Creates a new LyricsResponse instance using the specified properties.
@@ -497,6 +606,230 @@ export namespace spotify {
 
             /**
              * Gets the default type url for LyricsResponse
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a LyricsColors. */
+        interface ILyricsColors {
+
+            /** LyricsColors background */
+            background?: (number|null);
+
+            /** LyricsColors text */
+            text?: (number|null);
+
+            /** LyricsColors highlightText */
+            highlightText?: (number|null);
+        }
+
+        /** Represents a LyricsColors. */
+        class LyricsColors implements ILyricsColors {
+
+            /**
+             * Constructs a new LyricsColors.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: spotify.lyrics.ILyricsColors);
+
+            /** LyricsColors background. */
+            public background: number;
+
+            /** LyricsColors text. */
+            public text: number;
+
+            /** LyricsColors highlightText. */
+            public highlightText: number;
+
+            /**
+             * Creates a new LyricsColors instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns LyricsColors instance
+             */
+            public static create(properties?: spotify.lyrics.ILyricsColors): spotify.lyrics.LyricsColors;
+
+            /**
+             * Encodes the specified LyricsColors message. Does not implicitly {@link spotify.lyrics.LyricsColors.verify|verify} messages.
+             * @param message LyricsColors message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: spotify.lyrics.ILyricsColors, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified LyricsColors message, length delimited. Does not implicitly {@link spotify.lyrics.LyricsColors.verify|verify} messages.
+             * @param message LyricsColors message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: spotify.lyrics.ILyricsColors, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a LyricsColors message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns LyricsColors
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): spotify.lyrics.LyricsColors;
+
+            /**
+             * Decodes a LyricsColors message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns LyricsColors
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): spotify.lyrics.LyricsColors;
+
+            /**
+             * Verifies a LyricsColors message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a LyricsColors message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns LyricsColors
+             */
+            public static fromObject(object: { [k: string]: any }): spotify.lyrics.LyricsColors;
+
+            /**
+             * Creates a plain object from a LyricsColors message. Also converts values to other types if specified.
+             * @param message LyricsColors
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: spotify.lyrics.LyricsColors, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this LyricsColors to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for LyricsColors
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ColorLyricsResponse. */
+        interface IColorLyricsResponse {
+
+            /** ColorLyricsResponse lyrics */
+            lyrics?: (spotify.lyrics.ILyricsResponse|null);
+
+            /** ColorLyricsResponse colors */
+            colors?: (spotify.lyrics.ILyricsColors|null);
+
+            /** ColorLyricsResponse hasVocalRemoval */
+            hasVocalRemoval?: (boolean|null);
+
+            /** ColorLyricsResponse vocalRemovalColors */
+            vocalRemovalColors?: (spotify.lyrics.ILyricsColors|null);
+        }
+
+        /** Represents a ColorLyricsResponse. */
+        class ColorLyricsResponse implements IColorLyricsResponse {
+
+            /**
+             * Constructs a new ColorLyricsResponse.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: spotify.lyrics.IColorLyricsResponse);
+
+            /** ColorLyricsResponse lyrics. */
+            public lyrics?: (spotify.lyrics.ILyricsResponse|null);
+
+            /** ColorLyricsResponse colors. */
+            public colors?: (spotify.lyrics.ILyricsColors|null);
+
+            /** ColorLyricsResponse hasVocalRemoval. */
+            public hasVocalRemoval: boolean;
+
+            /** ColorLyricsResponse vocalRemovalColors. */
+            public vocalRemovalColors?: (spotify.lyrics.ILyricsColors|null);
+
+            /**
+             * Creates a new ColorLyricsResponse instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ColorLyricsResponse instance
+             */
+            public static create(properties?: spotify.lyrics.IColorLyricsResponse): spotify.lyrics.ColorLyricsResponse;
+
+            /**
+             * Encodes the specified ColorLyricsResponse message. Does not implicitly {@link spotify.lyrics.ColorLyricsResponse.verify|verify} messages.
+             * @param message ColorLyricsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: spotify.lyrics.IColorLyricsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ColorLyricsResponse message, length delimited. Does not implicitly {@link spotify.lyrics.ColorLyricsResponse.verify|verify} messages.
+             * @param message ColorLyricsResponse message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: spotify.lyrics.IColorLyricsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ColorLyricsResponse message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ColorLyricsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): spotify.lyrics.ColorLyricsResponse;
+
+            /**
+             * Decodes a ColorLyricsResponse message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ColorLyricsResponse
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): spotify.lyrics.ColorLyricsResponse;
+
+            /**
+             * Verifies a ColorLyricsResponse message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ColorLyricsResponse message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ColorLyricsResponse
+             */
+            public static fromObject(object: { [k: string]: any }): spotify.lyrics.ColorLyricsResponse;
+
+            /**
+             * Creates a plain object from a ColorLyricsResponse message. Also converts values to other types if specified.
+             * @param message ColorLyricsResponse
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: spotify.lyrics.ColorLyricsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ColorLyricsResponse to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ColorLyricsResponse
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

@@ -22,23 +22,23 @@ export interface TypeFLyricsData {
 }
 
 /**
- * Creates a Spotify LyricsResponse Protobuf message from TypeF data.
+ * Creates a Spotify ColorLyricsResponse Protobuf message from TypeF data.
  * @param lyricData TypeF LyricsData object.
  * @returns Uint8Array containing the encoded Protobuf message.
  */
 export function createLyricsResponse(lyricData: TypeFLyricsData): Uint8Array {
     const lines = lyricData.lines.map(line => {
+        // Convert words to Syllable format (startTimeMs, numChars)
         const syllables = line.words ? line.words.map(word =>
             spotify.lyrics.Syllable.create({
                 startTimeMs: Math.round(word.st * 1000),
-                endTimeMs: Math.round(word.et * 1000),
-                content: word.txt
+                numChars: word.txt.length  // Spotify uses character count, not endTime
             })
         ) : [];
 
-        return spotify.lyrics.Line.create({
+        return spotify.lyrics.LyricsLine.create({
             startTimeMs: Math.round(line.st * 1000),
-            content: line.txt, // Note: Translation handling can be added here if needed (e.g. appending to content)
+            words: line.txt,  // Changed from 'content' to 'words'
             syllables: syllables
         });
     });
@@ -47,18 +47,38 @@ export function createLyricsResponse(lyricData: TypeFLyricsData): Uint8Array {
         ? spotify.lyrics.SyncType.SYLLABLE_SYNCED
         : spotify.lyrics.SyncType.LINE_SYNCED;
 
-    const response = spotify.lyrics.LyricsResponse.create({
+    // Create the inner LyricsResponse
+    const lyricsResponse = spotify.lyrics.LyricsResponse.create({
         syncType: syncType,
         lines: lines,
-        provider: "Surge-LyricsFlow",
+        provider: "LyricsFlow",
         providerLyricsId: "custom-id",
-        providerDisplayName: "LyricsFlow",
+        providerDisplayName: "LyricsFlow by TypeF",
         syncLyricsUri: "",
-        isDenseTypeface: false,
+        isDenseTypeface: true,
         alternatives: [],
-        backgroundColor: { red: 0, green: 0, blue: 0, alpha: 255 },
-        textColor: { red: 255, green: 255, blue: 255, alpha: 255 }
+        language: "en",
+        isRtlLanguage: false,
+        fullscreenAction: 0,
+        showUpsell: false
     });
 
-    return spotify.lyrics.LyricsResponse.encode(response).finish();
+    // Wrap in ColorLyricsResponse (this is what Spotify actually expects!)
+    const colorLyricsResponse = spotify.lyrics.ColorLyricsResponse.create({
+        lyrics: lyricsResponse,
+        colors: spotify.lyrics.LyricsColors.create({
+            background: -8421504,  // Gray background
+            text: -16777216,       // Black text (0xFF000000 as signed int)
+            highlightText: -1      // White highlight (0xFFFFFFFF as signed int)
+        }),
+        hasVocalRemoval: false,
+        vocalRemovalColors: spotify.lyrics.LyricsColors.create({
+            background: -8421504,
+            text: -16777216,
+            highlightText: -1
+        })
+    });
+
+    return spotify.lyrics.ColorLyricsResponse.encode(colorLyricsResponse).finish();
 }
+

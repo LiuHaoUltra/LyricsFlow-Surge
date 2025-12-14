@@ -18,28 +18,51 @@ message ColorData {
   int32 alpha = 4; // usually 255
 }
 
+// DualSubs format: Syllable with startTimeMs and numChars
 message Syllable {
   int64 startTimeMs = 1;
-  int64 endTimeMs = 2; // derived or explicit
-  string content = 3;
+  int64 numChars = 2; // Changed from endTimeMs to numChars to match Spotify
 }
 
-message Line {
-  string content = 1;
-  int64 startTimeMs = 2;
+message LyricsLine {
+  int64 startTimeMs = 1;
+  string words = 2;
   repeated Syllable syllables = 3;
+}
+
+message Alternative {
+  string language = 1;
+  repeated string lines = 2;
+  bool rtlLang = 3;
 }
 
 message LyricsResponse {
   SyncType syncType = 1;
-  repeated Line lines = 2;
+  repeated LyricsLine lines = 2;
   string provider = 3;
   string providerLyricsId = 4;
   string providerDisplayName = 5;
-  string syncLyricsUri = 6;
-  bool isDenseTypeface = 7;
-  repeated Line alternatives = 8;
-  string language = 9;
-  ColorData backgroundColor = 10;
-  ColorData textColor = 11;
+  string syncLyricsUri = 7; // Note: field 6 is syncLyricsAndroidIntent
+  bool isDenseTypeface = 8;
+  repeated Alternative alternatives = 9;
+  string language = 10;
+  bool isRtlLanguage = 11;
+  int32 fullscreenAction = 12;
+  bool showUpsell = 13;
 }
+
+// Colors used for lyrics display
+message LyricsColors {
+  int32 background = 1;
+  int32 text = 2;
+  int32 highlightText = 3;
+}
+
+// The actual response type Spotify expects - wraps LyricsResponse with colors
+message ColorLyricsResponse {
+  LyricsResponse lyrics = 1;
+  LyricsColors colors = 2;
+  bool hasVocalRemoval = 3;
+  LyricsColors vocalRemovalColors = 4;
+}
+
