@@ -81,19 +81,22 @@ async function handleResponse() {
                 // 4. Convert to Protobuf
                 const protobufBytes = createLyricsResponse(lyricsData);
 
-                // 5. Return
+                // 5. Return - 修改原始响应体，和 DualSubs 一致
                 logger.info(`[Response] Success. Returning ${protobufBytes.length} bytes.`);
-                env.done({
-                    status: 200,
-                    headers: {
-                        ...env.request.headers, // headers from response? No, usually empty or copy.
-                        // Actually Surge response script: we modify the existing response.
-                        // If we pass `headers`, we replace them.
-                        'Content-Type': 'application/protobuf',
-                        'Content-Length': String(protobufBytes.length)
-                    },
-                    body: protobufBytes
-                });
+
+                // 获取原始 $response 对象并修改
+                const response = env.response;
+                response.body = protobufBytes;
+
+                // 删除可能导致问题的 headers
+                if (response.headers) {
+                    delete response.headers['content-length'];
+                    delete response.headers['Content-Length'];
+                    delete response.headers['transfer-encoding'];
+                    delete response.headers['Transfer-Encoding'];
+                }
+
+                env.done(response);
                 return;
 
             } else {
