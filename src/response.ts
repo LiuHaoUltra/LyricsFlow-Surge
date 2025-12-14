@@ -77,9 +77,16 @@ async function handleResponse() {
             const data = typeof resp.body === 'string' ? JSON.parse(resp.body) : resp.body;
             const lyricsData = data as TypeFLyricsData;
 
+            // Check if we actually have lyrics - if not, use Spotify's original
+            if (!lyricsData.lines || lyricsData.lines.length === 0) {
+                logger.warn(`[Response] TypeF returned no lyrics, using original`);
+                env.done(env.response);
+                return;
+            }
+
             // Convert to Protobuf
             const protobufBytes = createLyricsResponse(lyricsData);
-            logger.info(`[Response] Success: ${protobufBytes.length} bytes`);
+            logger.info(`[Response] Success: ${lyricsData.lines.length} lines, ${protobufBytes.length} bytes`);
 
             // Modify response
             const response = env.response;
