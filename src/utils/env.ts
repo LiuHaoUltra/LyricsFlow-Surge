@@ -29,6 +29,10 @@ export class Env {
         return typeof $request !== 'undefined' ? $request : { url: '', headers: {} };
     }
 
+    get response(): any {
+        return typeof $response !== 'undefined' ? $response : { status: 200, headers: {}, body: null };
+    }
+
     /**
      * Sends an HTTP request.
      */
@@ -121,5 +125,6 @@ declare const $notification: any;
 declare const $done: any;
 declare const $argument: string | undefined;
 declare const $request: any;
+declare const $response: any;
 
 export const env = new Env('LyricsFlow');
